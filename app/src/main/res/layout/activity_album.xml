@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".AlbumActivity">
 
-    <ListView
-        android:id="@+id/songList"
+    <GridView
+        android:id="@+id/albumList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:numColumns="auto_fit"
+        android:columnWidth="150dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

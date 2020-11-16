@@ -1,14 +1,14 @@
-plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
-}
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
 
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.2"
 
     defaultConfig {
-        applicationId "com.example.uielements2"
+        applicationId "com.example.uielements"
         minSdkVersion 16
         targetSdkVersion 30
         versionCode 1
