@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.GridView
+import android.view.*
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_queue.*
 import kotlinx.android.synthetic.main.album_entry.view.*
 
@@ -25,9 +23,9 @@ class AlbumActivity : AppCompatActivity() {
 
     class AlbumAdapter : BaseAdapter {
         var context: Context? = null
-        val albumList = MainActivity.albumArray
+        var albumList = MainActivity.albumArray
 
-        constructor(context: Context) : super(){
+        constructor(context: Context) : super() {
             this.context = context
         }
 
@@ -60,6 +58,5 @@ class AlbumActivity : AppCompatActivity() {
 
             return view
         }
-
     }
 }
