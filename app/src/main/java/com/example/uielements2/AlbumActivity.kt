@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.RecyclerView
 import com.example.uielements2.models.Album
 import com.example.uielements2.models.Song
 import com.google.android.material.snackbar.Snackbar
@@ -35,6 +36,13 @@ class AlbumActivity : AppCompatActivity() {
         albumGrid = findViewById<GridView>(R.id.albumList)
         albumGrid.adapter = adapter
         registerForContextMenu(albumGrid)
+        albumGrid.onItemClickListener = object: AdapterView.OnItemClickListener{
+            override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val intent = Intent(applicationContext, AlbumDetails::class.java)
+                intent.putExtra("position", position)
+                startActivity(intent)
+            }
+        }
 
         val fab: View = findViewById(R.id.addAlbumFab)
         fab.setOnClickListener {
@@ -58,6 +66,7 @@ class AlbumActivity : AppCompatActivity() {
             R.id.edit_album -> {
                 //get the song that was selected
                 val albumId = albums[info.position].id
+                Toast.makeText(applicationContext, "${info.position}", Toast.LENGTH_LONG).show()
 
                 //put it in an extra
                 val intent = Intent(applicationContext, EditAlbumActivity::class.java)
@@ -71,7 +80,7 @@ class AlbumActivity : AppCompatActivity() {
         }
     }
 
-    class AlbumAdapter : BaseAdapter {
+    class AlbumAdapter : BaseAdapter{
         var context: Context? = null
         var albumList: MutableList<Album>
 
@@ -96,17 +105,20 @@ class AlbumActivity : AppCompatActivity() {
             val album = this.albumList[position]
 
             var inflator = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-            var view = inflator.inflate(R.layout.album_entry, null)
-            view.imgAlbum.setOnClickListener {
-                val intent = Intent(context, AlbumDetails::class.java)
-                intent.putExtra("position", position)
-                context!!.startActivity(intent)
-            }
+            val view = inflator.inflate(R.layout.album_entry, null)
+
+            view.isEnabled = false
+//            view.setOnClickListener {
+//                val intent = Intent(context, AlbumDetails::class.java)
+//                intent.putExtra("position", position)
+//                context!!.startActivity(intent)
+//            }
             view.imgAlbum.setImageResource(MainActivity.albumPics[position])
             view.name.text = album.toString()
 
             return view
         }
+
     }
 
     //Add the options for the main menu

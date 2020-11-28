@@ -32,7 +32,7 @@ class EditAlbumActivity : AppCompatActivity() {
         //set the edittext values based on the record
         titleTxt = findViewById(R.id.editAlbumTitleTxt)
         releaseDateTxt = findViewById(R.id.editReleaseDateTxt)
-        editAlbumBtn = findViewById(R.id.editSongBtn)
+        editAlbumBtn = findViewById(R.id.editAlbumBtn)
 
         titleTxt.setText(album.title)
         releaseDateTxt.setText(album.releaseDate)

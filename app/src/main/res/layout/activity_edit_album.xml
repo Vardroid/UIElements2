@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Button
-        android:id="@+id/editSongBtn2"
+        android:id="@+id/editAlbumBtn"
         android:layout_width="109dp"
         android:layout_height="61dp"
         android:layout_marginEnd="16dp"
