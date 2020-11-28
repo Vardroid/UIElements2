@@ -12,6 +12,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ContextMenu
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
@@ -109,6 +110,35 @@ class QueueActivity : AppCompatActivity() {
                 return true
             }
             else -> super.onContextItemSelected(item)
+        }
+    }
+
+    //Add the options for the main menu
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater = menuInflater
+        inflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+    //Method when an option in the main menu is selected
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId){
+            R.id.queue ->{
+                //startActivity(Intent(this, QueueActivity::class.java))
+                true
+            }
+            R.id.songs ->{
+                startActivity(Intent(this, MainActivity::class.java))
+                true
+            }
+            R.id.album ->{
+                startActivity(Intent(this, AlbumActivity::class.java))
+                true
+            }
+            R.id.add ->{
+                startActivity(Intent(this, AddSong::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

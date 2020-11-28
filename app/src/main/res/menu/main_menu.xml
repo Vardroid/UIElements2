@@ -11,4 +11,7 @@
         app:showAsAction="ifRoom"
         android:title="Queue">
     </item>
+    <item android:id="@+id/add"
+        android:title="Add Song">
+    </item>
 </menu>
