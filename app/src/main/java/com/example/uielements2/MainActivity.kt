@@ -1,17 +1,12 @@
 package com.example.uielements2
 
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.ContextMenu
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.Toast
+import android.view.*
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.example.uielements2.models.Song
 import com.google.android.material.snackbar.Snackbar
@@ -34,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         var albumArray = arrayOf("Love Poem","Flower Bookmark II","Palette")
         var albumPics = arrayOf(R.drawable.flower_bookmark_2,R.drawable.love_poem,R.drawable.palette)
-        lateinit var adapter: ArrayAdapter<Song>
+        lateinit var adapter: MyCustomAdapterList
         lateinit var songs: MutableList<Song>
         lateinit var songsTableHandler: SongsTableHandler
         lateinit var songList: ListView
@@ -51,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         songs = songsTableHandler.read()
 
         //attach to adapter
-        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, songs)
+        adapter = MyCustomAdapterList(this, songs)
         songList = findViewById<ListView>(R.id.songList)
         songList.adapter = adapter
         registerForContextMenu(songList)
@@ -62,6 +57,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    class MyCustomAdapterList(context: Context, songs: MutableList<Song>): BaseAdapter(){
+        private val mContext: Context = context
+        private val mSongs: MutableList<Song> = songs
+
+        override fun getCount(): Int {
+            return mSongs.size
+        }
+
+        override fun getItem(position: Int): Any {
+            return mSongs[position]
+        }
+
+        override fun getItemId(position: Int): Long {
+            return position.toLong()
+        }
+
+        override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
+            val layoutInflater = LayoutInflater.from(mContext)
+            val rowMain = layoutInflater.inflate(R.layout.row_main, parent, false)
+
+            val rowMainDescTxt = rowMain.findViewById<TextView>(R.id.rowMainDescTxt)
+            val rowMainSongTxt = rowMain.findViewById<TextView>(R.id.rowMainSongTxt)
+            rowMainSongTxt.text = mSongs[position].title
+            val desc = "${mSongs[position].artist} - ${mSongs[position].album}"
+            rowMainDescTxt.text = desc
+
+            return rowMain
+        }
+
+    }
+
+    //CONTEXT MENU
+    //
     //Create Context Menu when you long press an item in the song list
     override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
@@ -116,16 +144,45 @@ class MainActivity : AppCompatActivity() {
                 alert.show()
                 true
             }
+            R.id.add_to_album -> {
+                //get the table handler
+                AlbumActivity.albumsTableHandler = AlbumsTableHandler(this)
+
+                //get the records
+                AlbumActivity.albums = AlbumActivity.albumsTableHandler.read()
+
+                val arrayAdapt: ArrayAdapter<String> = ArrayAdapter(applicationContext, android.R.layout.simple_list_item_1)
+                for(album in AlbumActivity.albums){
+                    arrayAdapt.add(album.title)
+                }
+
+                val dialogBuilder = AlertDialog.Builder(this)
+                dialogBuilder.setTitle("Choose an Album")
+                dialogBuilder.setAdapter(arrayAdapt) { _, which ->
+                    AlbumActivity.albums[which].albumSongs.add(songs[info.position])
+                    Toast.makeText(applicationContext, "${AlbumActivity.albums[which].albumSongs.size} Song has been added to album.", Toast.LENGTH_LONG).show()
+                }
+                dialogBuilder.setNegativeButton("Cancel", null)
+
+                val dialog: AlertDialog = dialogBuilder.create()
+                dialog.show()
+
+                true
+            }
             else -> super.onContextItemSelected(item)
         }
     }
 
+
+    //OPTIONS MENU
+    //
     //Add the options for the main menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.main_menu, menu)
         return true
     }
+
     //Method when an option in the main menu is selected
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId){

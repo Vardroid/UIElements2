@@ -39,7 +39,7 @@ class AlbumActivity : AppCompatActivity() {
         albumGrid.onItemClickListener = object: AdapterView.OnItemClickListener{
             override fun onItemClick(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val intent = Intent(applicationContext, AlbumDetails::class.java)
-                intent.putExtra("position", position)
+                intent.putExtra("albumId", position)
                 startActivity(intent)
             }
         }
@@ -50,36 +50,7 @@ class AlbumActivity : AppCompatActivity() {
         }
     }
 
-    //Create Context Menu when you long press an item in the song list
-    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        val inflater = menuInflater
-
-        //Add the menu items for the context menu
-        inflater.inflate(R.menu.album_item_menu, menu)
-    }
-
-    //Method when a context item is selected
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
-        return when (item.itemId){
-            R.id.edit_album -> {
-                //get the song that was selected
-                val albumId = albums[info.position].id
-                Toast.makeText(applicationContext, "${info.position}", Toast.LENGTH_LONG).show()
-
-                //put it in an extra
-                val intent = Intent(applicationContext, EditAlbumActivity::class.java)
-                intent.putExtra("albumId", albumId)
-
-                //start activity
-                startActivity(intent)
-                true
-            }
-            else -> super.onContextItemSelected(item)
-        }
-    }
-
+    //class to create the adapter for the album
     class AlbumAdapter : BaseAdapter{
         var context: Context? = null
         var albumList: MutableList<Album>
@@ -107,13 +78,13 @@ class AlbumActivity : AppCompatActivity() {
             var inflator = context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val view = inflator.inflate(R.layout.album_entry, null)
 
-            view.isEnabled = false
 //            view.setOnClickListener {
 //                val intent = Intent(context, AlbumDetails::class.java)
 //                intent.putExtra("position", position)
 //                context!!.startActivity(intent)
 //            }
-            view.imgAlbum.setImageResource(MainActivity.albumPics[position])
+
+            view.imgAlbum.setImageResource(R.drawable.love_poem)
             view.name.text = album.toString()
 
             return view
@@ -121,6 +92,40 @@ class AlbumActivity : AppCompatActivity() {
 
     }
 
+    //CONTEXT MENU
+    //
+    //Create Context Menu when you long press an item in the song list
+    override fun onCreateContextMenu(menu: ContextMenu?, v: View?, menuInfo: ContextMenu.ContextMenuInfo?) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        val inflater = menuInflater
+
+        //Add the menu items for the context menu
+        inflater.inflate(R.menu.album_item_menu, menu)
+    }
+
+    //Method when a context item is selected
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
+        return when (item.itemId){
+            R.id.edit_album -> {
+                //get the song that was selected
+                val albumId = albums[info.position].id
+
+                //put it in an extra
+                val intent = Intent(applicationContext, EditAlbumActivity::class.java)
+                intent.putExtra("albumId", albumId)
+
+                //start activity
+                startActivity(intent)
+                true
+            }
+            else -> super.onContextItemSelected(item)
+        }
+    }
+
+
+    //OPTIONS MENU
+    //
     //Add the options for the main menu
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater

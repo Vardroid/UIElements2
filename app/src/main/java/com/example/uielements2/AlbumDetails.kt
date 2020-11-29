@@ -15,10 +15,12 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import com.example.uielements2.models.Song
 
 class AlbumDetails : AppCompatActivity() {
-    private lateinit var adapter: ArrayAdapter<String>
-    private lateinit var arraySongs: Array<String>
+    private lateinit var adapter: MainActivity.MyCustomAdapterList
+    private lateinit var arraySongs: MutableList<Song>
+    private var albumId = 0
 
     //function that removes an element in an array given its index
     private fun remove(arr: Array<String>, index: Int): Array<String>{
@@ -36,13 +38,14 @@ class AlbumDetails : AppCompatActivity() {
         setContentView(R.layout.activity_album_details)
 
         val bundle = intent.extras
-        val albumName = bundle?.getString("name")
-        arraySongs = MainActivity.songsArray[bundle?.getInt("position")!!]
-        findViewById<ImageView>(R.id.albumImg).setImageResource(MainActivity.albumPics[bundle.getInt("position")])
-        findViewById<TextView>(R.id.albumNameTxt).text = albumName
+        val albumId = bundle?.getInt("albumId")
+        arraySongs = AlbumActivity.albums[albumId!!].albumSongs
+        findViewById<ImageView>(R.id.albumImg).setImageResource(R.drawable.love_poem)
+        findViewById<TextView>(R.id.albumNameTxt).text = AlbumActivity.albums[albumId!!].title
 
-        adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraySongs)
+        adapter = MainActivity.MyCustomAdapterList(applicationContext, arraySongs)
         val songList = findViewById<ListView>(R.id.albumSongList)
+        Toast.makeText(applicationContext, "${arraySongs.size}", Toast.LENGTH_LONG).show()
         songList.adapter = adapter
         registerForContextMenu(songList)
     }
@@ -71,11 +74,11 @@ class AlbumDetails : AppCompatActivity() {
                         .setCancelable(false)
                         .setPositiveButton("Yes", DialogInterface.OnClickListener{
                             _, _ ->
-                                MainActivity.songsArray[bundle?.getInt("position")!!] = remove(MainActivity.songsArray[bundle.getInt("position")], info.position)
-                                arraySongs = MainActivity.songsArray[bundle.getInt("position")]
-                                adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, arraySongs)
-                                val songList = findViewById<ListView>(R.id.albumSongList)
-                                songList.adapter = adapter
+                            AlbumActivity.albums[albumId].albumSongs.removeAt(info.position)
+                            arraySongs = AlbumActivity.albums[albumId!!].albumSongs
+                            adapter = MainActivity.MyCustomAdapterList(applicationContext, arraySongs)
+                            val songList = findViewById<ListView>(R.id.albumSongList)
+                            songList.adapter = adapter
                         })
                         .setNegativeButton("No", DialogInterface.OnClickListener{
                             dialog, _ ->

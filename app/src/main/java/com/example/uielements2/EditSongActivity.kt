@@ -47,7 +47,7 @@ class EditSongActivity : AppCompatActivity() {
             val newSong = Song(id = songId, title = title, artist = artist, album = album)
             if(databaseHander.update(newSong)){
                 Toast.makeText(applicationContext, "Song was Updated", Toast.LENGTH_LONG).show()
-                MainActivity.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, MainActivity.songs)
+                MainActivity.adapter = MainActivity.MyCustomAdapterList(this, MainActivity.songs)
                 MainActivity.songList.adapter = MainActivity.adapter
                 clearFields()
             }else{
